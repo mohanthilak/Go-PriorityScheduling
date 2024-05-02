@@ -15,3 +15,6 @@ Start the Go-testAPI first:
 In another terminal start the GoPriorityScheduling:
 1. `cd GoPriorityScheduling`
 2. `go run main.go` 
+
+## How it works
+![Architecture](./Diagram.png)
