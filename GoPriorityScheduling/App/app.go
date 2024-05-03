@@ -16,10 +16,6 @@ func NewApp() *AppStruct {
 		schedulerManager: s,
 	}
 	go app.worker(1, s)
-	// go app.worker(2, s)
-	// go app.worker(3, s)
-	// go app.worker(4, s)
-	// go app.worker(5, s)
 	return app
 }
 
