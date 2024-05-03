@@ -18,5 +18,8 @@ In another terminal start the GoPriorityScheduling:
 
 ## How it works
 ![Architecture](./Diagram.png)
-Tasks are created when a request comes in with a priority level. Once a task is created it is then pushed to the queue. A worker Goroutine is running in the background. This worker executes tasks. You can increase the number of workers. I've tried to maintain a M:M cardinality for M equal to the number of cores available, in my case, 1. 
-Reducing the number of workers increases the response time and increasing the number of go routines to match your cores will reduce the response time.
+Tasks are created when a request comes in with a priority level. Once a task is created it is then pushed to the queue. A worker Goroutine is running in the background. This worker executes tasks. You can increase the number of workers. 
+I've tried to maintain a M:M cardinality for M equal to the number of cores available, in my case, 1(to replicate the number of goroutines). Reducing the number of workers increases the response time and increasing the number of workers to match your cores will reduce the response time.
+The worker then sends an HTTP request to the Test-API, in order to replicate a complex & time-consuming DB operation, the response will take a minimum of 4 Seconds.
+
+The Worker is constantly listening to the Task queue by calling the `getNextTask()` function. This function will first check the age of the task, for every 5 seconds a task spends in the queue, its priority is incremented.

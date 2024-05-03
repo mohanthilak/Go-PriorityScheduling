@@ -29,7 +29,7 @@ func (a *AppStruct) worker(id int, scheduler *scheduler) {
 		task := scheduler.getNextTask()
 		fmt.Printf("Worker %d executing task: %s with priority %d\n", id, task.name, task.priority)
 		// Simulate task execution time
-		go a.MakeHTTPRequest(task)
+		a.MakeHTTPRequest(task)
 	}
 }
 
