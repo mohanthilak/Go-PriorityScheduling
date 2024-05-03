@@ -24,6 +24,15 @@ type scheduler struct {
 	condition *sync.Cond
 }
 
+func (a *AppStruct) worker(id int, scheduler *scheduler) {
+	for {
+		task := scheduler.getNextTask()
+		fmt.Printf("Worker %d executing task: %s with priority %d\n", id, task.name, task.priority)
+		// Simulate task execution time
+		go a.MakeHTTPRequest(task)
+	}
+}
+
 func (s *scheduler) addTask(task *Task) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -51,7 +60,7 @@ func (s *scheduler) getNextTask() *Task {
 
 func (s *scheduler) ageTasks() {
 	for _, task := range s.tasks {
-		if int(time.Since(task.PriorityUpdatesAt)) > 5 {
+		if int(time.Since(task.PriorityUpdatesAt).Seconds()) > 5 {
 			// elapsedTicks := int(time.Since(task.Arrival).Seconds()) / 5
 			log.Println("\n increaseing ", task.priority, " to: ", (task.priority + 1), "\n")
 			task.priority++
@@ -85,13 +94,4 @@ func (a *AppStruct) MakeHTTPRequest(t *Task) {
 		os.Exit(1)
 	}
 	t.responseChan <- string(resBody)
-}
-
-func (a *AppStruct) worker(id int, scheduler *scheduler) {
-	for {
-		task := scheduler.getNextTask()
-		fmt.Printf("Worker %d executing task: %s with priority %d\n", id, task.name, task.priority)
-		// Simulate task execution time
-		a.MakeHTTPRequest(task)
-	}
 }
